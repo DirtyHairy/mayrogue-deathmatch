@@ -1,12 +1,28 @@
 export default class Rectangle {
 
     constructor({
-        x, y, width, height
+        x = 0, y = 0, width = 0, height = 0
     } = {}) {
         this._x = x;
         this._y = y;
         this._width = width;
         this._height = height;
+    }
+
+    getX() {
+        return this._x;
+    }
+
+    getY() {
+        return this._y;
+    }
+
+    getWidth() {
+        return this._width;
+    }
+
+    getHeight() {
+        return this._height;
     }
 
     isInside(x, y) {
