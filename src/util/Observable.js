@@ -56,12 +56,11 @@ export default class Observable {
      * Detach all handlers registered with a given scope.
      */
     detachAllListeners(scope) {
-        _.each(this._listeners, (listeners, evt) => {
-            this._listeners[evt] = _.reject(
+        _.each(this._listeners, (listeners, evt) => this._listeners[evt] = _.reject(
                 this._listeners[evt],
                 listener => listener.scope === scope
-            );
-        });
+            )
+        );
     }
 
     detachAllRelays(scope) {
@@ -93,7 +92,7 @@ export default class Observable {
         _.each(this._listeners[evt], listener => listener.callback.apply(listener.scope, args));
     }
 
-    _handleRelays(evt, ...args) {
+    _handleRelays(...args) {
         if (this._relays.length === 0) {
             return;
         }
