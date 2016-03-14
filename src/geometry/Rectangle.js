@@ -45,4 +45,6 @@ export default class Rectangle {
             height: this._height
         });
     }
+
+    destroy() {}
 }
