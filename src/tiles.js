@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-const Tiles = {
+const tiles = {
    FOREST: 0,
    FOREST1: 1,
    FOREST2: 2,
@@ -67,20 +67,24 @@ const entityDefaultProperties = {
    width: 1
 };
 
-Tiles.properties = Tiles.compile(tileProperties);
+tiles.properties = tiles.compile(tileProperties);
 
 function setDefaultProperties(min, max, defaults) {
    for (let tile = min; tile <= max; tile++) {
-      if (!Tiles.properties[tile]) Tiles.properties[tile] = {};
+      if (!tiles.properties[tile]) tiles.properties[tile] = {};
 
-      _.defaults(Tiles.properties[tile], defaults);
+      _.defaults(tiles.properties[tile], defaults);
    }
 }
 
-setDefaultProperties(Tiles.MIN_ENTITIES, Tiles.MAX_ENTITIES,
+setDefaultProperties(tiles.MIN_ENTITIES, tiles.MAX_ENTITIES,
    entityDefaultProperties);
 
-setDefaultProperties(Tiles.MIN_GROUND, Tiles.MAX_GROUND,
+setDefaultProperties(tiles.MIN_GROUND, tiles.MAX_GROUND,
    groundDefaultProperties);
 
-export default Tiles;
+Object.freeze(tiles);
+Object.freeze(tiles.properties);
+Object.keys(tiles.properties).forEach(tile => Object.freeze(tiles.properties[tile]));
+
+export default tiles;
