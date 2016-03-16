@@ -74,5 +74,7 @@ export default class Movement {
     static unserialize(blob) {
         return new Movement(blob);
     }
-    
+
+    destroy() {}
+
 }

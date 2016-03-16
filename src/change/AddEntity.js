@@ -23,4 +23,6 @@ export default class AddEntity {
         return new AddEntity(Entity.unserialize(blob.entity));
     }
 
+    destroy() {}
+
 }

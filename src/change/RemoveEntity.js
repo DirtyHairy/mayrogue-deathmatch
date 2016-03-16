@@ -30,4 +30,6 @@ export default class RemoveEntity {
         return new RemoveEntity(blob);
     }
 
+    destroy() {}
+
 }

@@ -187,8 +187,6 @@ export default class Entity extends Observable {
         }
     }
 
-    destroy() {}
-
 }
 
 Object.defineProperties(Entity, {

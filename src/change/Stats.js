@@ -70,4 +70,6 @@ export default class Stats {
         return new Stats(blob);
     }
 
+    destroy() {}
+
 }
