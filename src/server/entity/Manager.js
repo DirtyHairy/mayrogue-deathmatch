@@ -1,7 +1,11 @@
+import * as _ from 'lodash';
 import EntityManagerBase from '../../entity/Manager';
+import ChangeMovement from '../../change/Movement';
+import ChangeStats from '../../change/Stats';
+import ChangeRemoveEntity from '../../change/RemoveEntity';
+import ChangeAddEntity from '../../change/AddEntity';
 
 export default class EntityManager extends EntityManagerBase {
-
 
     constructor(config) {
         super(config);
@@ -52,17 +56,15 @@ export default class EntityManager extends EntityManagerBase {
     }
 
 
-    removeEntity: function(entity) {
-        var me = this;
-
-        _parent.removeEntity.apply(me, arguments);
+    removeEntity(entity) {
+        super.removeEntity(this);
 
         // Remove the entity from all changeset registries
-        var id = entity.getId();
-        _.each([me._movements, me._statsUpdates, me._newEntities], function(registry) {
+        const id = entity.getId();
+        [this._movements, this._statsUpdates, this._newEntities].forEach(registry => {
             if (registry[id]) delete registry[id];
         });
-    },
+    }
 
     /**
      * Build the changeset for a particular player. The algorithm works by identifying all entities with the
@@ -75,35 +77,31 @@ export default class EntityManager extends EntityManagerBase {
      *
      * NOTE that the player entity is always in within the tracking domain and thus contained in both sets, so it does not
      * need any special treatment --- changes to the player entity are always transmitted.
-     *
-     * @param playerContext
-     * @returns {Array}
      */
-    pickupChangeset: function(playerContext) {
-        var me = this,
-            trackedEntitiesOld = playerContext.getTrackedEntities();
+    pickupChangeset(playerContext) {
+        const trackedEntitiesOld = playerContext.getTrackedEntities();
 
         // Entities within this domain are tracked
-        var trackingDomain = playerContext.getTrackingDomain();
+        const trackingDomain = playerContext.getTrackingDomain();
 
         // Build a list of all entities which are in the tracking domain
-        var trackedEntitiesNew = {};
-        _.each(me.getEntities(), function(entity) {
+        const trackedEntitiesNew = {};
+        this.getEntities().forEach(entity => {
             if (trackingDomain.intersect(entity.getBoundingBox()))
                 trackedEntitiesNew[entity.getId()] = entity;
         });
 
-        var changeset = [];
+        const changeset = [];
 
-        _.each(trackedEntitiesOld, function(entity) {
+        _.each(trackedEntitiesOld, entity => {
             // We _could_ use the field id here, but then we'd have to typecast!!!
-            var id = entity.getId();
+            const id = entity.getId();
 
             // If we were are still tracking a previously tracked entity, just parrot the changes
             if (trackedEntitiesNew[id]) {
 
-                if (me._movements[id]) {
-                    changeset.push(new Change.Movement({
+                if (this._movements[id]) {
+                    changeset.push(new ChangeMovement({
                         id: id,
                         x: entity.getX(),
                         y: entity.getY(),
@@ -111,25 +109,25 @@ export default class EntityManager extends EntityManagerBase {
                     }));
                 }
 
-                if (me._statsUpdates[id]) {
-                    changeset.push(new Change.Stats(me._statsUpdates[id]));
+                if (this._statsUpdates[id]) {
+                    changeset.push(new ChangeStats(this._statsUpdates[id]));
                 }
             } else {
 
                 // The entity is not tracked anymore -> remove it
-                changeset.push(new Change.RemoveEntity({
+                changeset.push(new ChangeRemoveEntity({
                     id: id
                 }));
             }
         });
 
-        _.each(trackedEntitiesNew, function(entity) {
+        _.each(trackedEntitiesNew, entity => {
             // We _could_ use the field id here, but then we'd have to typecast!!!
-            var id = entity.getId();
+            const id = entity.getId();
 
             // To-be-tracked entities which were not tracked before are transmitted
             if (!trackedEntitiesOld[id]) {
-                changeset.push(new Change.AddEntity({
+                changeset.push(new ChangeAddEntity({
                     entity: entity
                 }));
             }
@@ -139,6 +137,5 @@ export default class EntityManager extends EntityManagerBase {
         playerContext.setTrackedEntities(trackedEntitiesNew);
 
         return changeset;
-    },
-
+    }
 }
