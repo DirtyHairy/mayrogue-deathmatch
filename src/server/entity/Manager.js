@@ -29,7 +29,9 @@ export default class EntityManager extends EntityManagerBase {
         // Only record the new position if the entity wasn't added in this this timeslice --- in this case, it will
         // be retransmitted anyway
         const id = entity.getId();
-        if (!this._newEntities[id]) this._movements[id] = entity;
+        if (!this._newEntities[id]) {
+            this._movements[id] = entity;
+        }
     }
 
     _onEntityStatsChange(entity) {
@@ -38,7 +40,9 @@ export default class EntityManager extends EntityManagerBase {
         // See above
         const id = entity.getId();
         if (!this._newEntities[id]) {
-            if (!this._statsUpdates[id]) this._statsUpdates[id] = {id: id};
+            if (!this._statsUpdates[id]) {
+                this._statsUpdates[id] = {id: id};
+            }
             this._statsUpdates[id].hp = entity.getStats().getHp();
             this._statsUpdates[id].exp = entity.getStats().getExp();
             this._statsUpdates[id].level = entity.getStats().getLevel();
@@ -50,7 +54,9 @@ export default class EntityManager extends EntityManagerBase {
 
         const id = entity.getId();
 
-        if (this.getEntityById(id)) return this;
+        if (this.getEntityById(id)) {
+            return this;
+        }
 
         this._newEntities[id] = entity;
     }
@@ -62,7 +68,9 @@ export default class EntityManager extends EntityManagerBase {
         // Remove the entity from all changeset registries
         const id = entity.getId();
         [this._movements, this._statsUpdates, this._newEntities].forEach(registry => {
-            if (registry[id]) delete registry[id];
+            if (registry[id]) {
+                delete registry[id];
+            }
         });
     }
 
@@ -87,8 +95,9 @@ export default class EntityManager extends EntityManagerBase {
         // Build a list of all entities which are in the tracking domain
         const trackedEntitiesNew = {};
         this.getEntities().forEach(entity => {
-            if (trackingDomain.intersect(entity.getBoundingBox()))
+            if (trackingDomain.intersect(entity.getBoundingBox())) {
                 trackedEntitiesNew[entity.getId()] = entity;
+            }
         });
 
         const changeset = [];

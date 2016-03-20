@@ -21,7 +21,9 @@ export default class World extends Observable {
             entityRemoved: this._onEntityRemoved
         }, this);
 
-        if (entities) entities.forEach(entity => this.addEntity(entity));
+        if (entities) {
+            entities.forEach(entity => this.addEntity(entity));
+        }
     }
 
     getMap() {

@@ -4,6 +4,6 @@
     "undef": true,
     "unused": true,
     "browser": true,
-    "curly": false,
+    "curly": true,
     "predef": ["mayrogue"]
 }

@@ -56,13 +56,17 @@ export default class EntityManager extends Observable {
     }
 
     rectAccessible(rect, entity) {
-        if (!entity) return true;
+        if (!entity) {
+            return true;
+        }
 
         return !_.some(this._entities, e => e !== entity && e.getBoundingBox().intersect(rect));
     }
 
     fieldAccessible(x, y, entity) {
-        if (!entity) return true;
+        if (!entity) {
+            return true;
+        }
 
         return !_.some(this._entities, e => e !== entity && e.getBoundingBox().isInside(x, y));
     }

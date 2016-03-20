@@ -102,5 +102,5 @@ export default class Stats extends Observable {
     static unserialize(blob) {
         return new Stats(blob);
     }
-    
+
 }

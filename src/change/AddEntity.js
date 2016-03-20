@@ -9,8 +9,9 @@ export default class AddEntity {
     }
 
     apply(world) {
-        if (!world.getEntityById(this._entity.getId()))
-            world.addEntity(this._entity);
+        if (!world.getEntityById(this._entity.getId())) {
+            world.addEntity(this._entity);    
+        }
     }
 
     serialize() {

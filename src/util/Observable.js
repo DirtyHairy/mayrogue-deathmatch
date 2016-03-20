@@ -13,7 +13,9 @@ export default class Observable {
      */
     attachListeners(listeners, scope) {
         _.each(listeners, (handler, evt) => {
-            if (!this._listeners[evt]) this._listeners[evt] = [];
+            if (!this._listeners[evt]) {
+                this._listeners[evt] = [];
+            }
 
             this._listeners[evt].push({
                 callback: handler,
@@ -36,7 +38,9 @@ export default class Observable {
      */
     detachListeners(listeners, scope) {
         _.each(listeners, (handler, evt) => {
-            if (!this._listeners[evt]) return;
+            if (!this._listeners[evt]) {
+                return;
+            }
 
             this._listeners[evt] = _.reject(
                 this._listeners[evt],
@@ -85,7 +89,9 @@ export default class Observable {
     }
 
     _handleListeners(evt, ...args) {
-        if (!this._listeners[evt]) return;
+        if (!this._listeners[evt]) {
+            return;
+        }
 
         args.push(this);
 
