@@ -46,11 +46,11 @@ export default class EntityManager extends EntityManagerBase {
     }
 
     addEntity(entity) {
+        super._addEntity(entity);
+
         const id = entity.getId();
 
-        if (this.getEntityById(id)) return;
-
-        super._addEntity(entity);
+        if (this.getEntityById(id)) return this;
 
         this._newEntities[id] = entity;
     }

@@ -31,10 +31,10 @@ export default class Rectangle {
     }
 
     intersect(rect) {
-        return !((this._x + this._width - 1 < rect._x) ||
-                 (this._x > rect._x + rect._width - 1)  ||
-                 (this._y + this._height - 1 < rect._y) ||
-                 (this._y > rect._y + rect._height - 1));
+        return !((this._x + this._width < rect._x) ||
+                 (this._x > rect._x + rect._width)  ||
+                 (this._y + this._height < rect._y) ||
+                 (this._y > rect._y + rect._height));
     }
 
     clone() {

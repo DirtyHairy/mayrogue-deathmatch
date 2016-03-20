@@ -4,6 +4,8 @@ import * as _ from 'lodash';
 export default class EntityManager extends Observable {
 
     constructor() {
+        super();
+
         this._entities = [];
         this._entityMap = {};
     }
@@ -14,16 +16,26 @@ export default class EntityManager extends Observable {
 
 
     addEntity(entity) {
+        if (this.getEntityById(entity.getId())) {
+            return this;
+        }
+
         this._entities.push(entity);
         this._entityMap[entity.getId()] = entity;
 
         entity.attachRelay((...args) => this.fireEvent(...args), this);
 
         this.fireEvent('entityAdded', entity);
+
+        return this;
     }
 
     removeEntity(entity, doNotDestroy) {
         const id = entity.getId();
+
+        if (!this.getEntityById(id)) {
+            return;
+        }
 
         this._entities = this._entities.filter(e => e !== entity);
         delete this._entityMap[id];
@@ -35,6 +47,8 @@ export default class EntityManager extends Observable {
         } else {
             entity.detachAll(this);
         }
+
+        return this;
     }
 
     getEntityById(id) {

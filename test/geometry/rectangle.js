@@ -28,6 +28,51 @@ suite('Rectangles', function() {
         assert.ok(!r.isInside(2, 2));
     });
 
+    test('The left edge is part of the rectangle', function() {
+        const r = new Rectangle({
+            x: -1,
+            y: -1,
+            width: 1,
+            height: 1
+        });
+
+        assert.ok(r.isInside(-1, -0.5));
+    });
+
+    test('The top edge is part of the rectangle', function() {
+        const r = new Rectangle({
+            x: -1,
+            y: -1,
+            width: 1,
+            height: 1
+        });
+
+        assert.ok(r.isInside(-0.5, -1));
+    });
+
+
+    test('The right edge is not part of the rectangle', function() {
+        const r = new Rectangle({
+            x: -1,
+            y: -1,
+            width: 1,
+            height: 1
+        });
+
+        assert.ok(!r.isInside(0, -0.5));
+    });
+
+    test('The bottom edge is not part of the rectangle', function() {
+        const r = new Rectangle({
+            x: -1,
+            y: -1,
+            width: 1,
+            height: 1
+        });
+
+        assert.ok(!r.isInside(-0.5, 0));
+    });
+
     test('Rectangle intersection: intersecting rectangles', function() {
         const r1 = new Rectangle({
                 x: -1,
