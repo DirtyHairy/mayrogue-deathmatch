@@ -88,8 +88,8 @@ export default class DomainMap {
     /**
      * Identify two domains by removing domain2 from the domain list and setting up a mapping between the two.
      */
-    _identifyDomains(domain1, domain2) {
-        this._domains = this._domains.filter(d => d !==domain2);
+    _identifyDomains(domain1, domain2)  {
+        this._domains = this._domains.filter(d => d !== domain2);
         this._domainMappings[domain2] = domain1;
     }
 
