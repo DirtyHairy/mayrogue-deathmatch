@@ -2,7 +2,7 @@ const types = {
     MOVEMENT: 1,
     ADD_ENTITY: 2,
     REMOVE_ENTITY: 3,
-    ATTACH: 4,
+    ATTACK: 4,
     STATS: 5
 };
 

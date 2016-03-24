@@ -1,20 +1,23 @@
 import * as _ from 'lodash';
-import EntityManagerBase from '../../entity/Manager';
 import ChangeMovement from '../../change/Movement';
 import ChangeStats from '../../change/Stats';
 import ChangeRemoveEntity from '../../change/RemoveEntity';
 import ChangeAddEntity from '../../change/AddEntity';
 
-export default class EntityManager extends EntityManagerBase {
+export default class ChangeTracker {
 
-    constructor(config) {
-        super(config);
+    constructor(entityManager) {
+        this._entityManager = entityManager;
 
-        this._movements = null;
-        this._statsUpdates = null;
-        this._newEntities = null;
+        this._entityManager.attachListeners({
+            entityAdded: this._onEntityAdded,
+            entityRemoved: this._onEntityRemoved,
+            move: this._onEntityMove,
+            statsChange: this._onEntityStatsChange,
+        }, this);
 
         this.clearChanges();
+        this._entityManager.getEntities().forEach(entity => this._onEntityAdded(entity));
     }
 
     clearChanges() {
@@ -24,8 +27,6 @@ export default class EntityManager extends EntityManagerBase {
     }
 
     _onEntityMove(bbOld, bbNew, entity) {
-        super._onEntityMove(...arguments);
-
         // Only record the new position if the entity wasn't added in this this timeslice --- in this case, it will
         // be retransmitted anyway
         const id = entity.getId();
@@ -35,9 +36,6 @@ export default class EntityManager extends EntityManagerBase {
     }
 
     _onEntityStatsChange(entity) {
-        super._onEntityStatsChange(...arguments);
-
-        // See above
         const id = entity.getId();
         if (!this._newEntities[id]) {
             if (!this._statsUpdates[id]) {
@@ -49,22 +47,15 @@ export default class EntityManager extends EntityManagerBase {
         }
     }
 
-    addEntity(entity) {
-        super._addEntity(entity);
-
+    _onEntityAdded(entity) {
         const id = entity.getId();
 
-        if (this.getEntityById(id)) {
-            return this;
-        }
-
         this._newEntities[id] = entity;
+
+        return this;
     }
 
-
-    removeEntity(entity) {
-        super.removeEntity(this);
-
+    _onEntityRemoved(entity) {
         // Remove the entity from all changeset registries
         const id = entity.getId();
         [this._movements, this._statsUpdates, this._newEntities].forEach(registry => {
@@ -94,11 +85,9 @@ export default class EntityManager extends EntityManagerBase {
 
         // Build a list of all entities which are in the tracking domain
         const trackedEntitiesNew = {};
-        this.getEntities().forEach(entity => {
-            if (trackingDomain.intersect(entity.getBoundingBox())) {
-                trackedEntitiesNew[entity.getId()] = entity;
-            }
-        });
+        this._entityManager.entitiesIntersectingWith(trackingDomain).forEach(
+            entity => trackedEntitiesNew[entity.getId()] = entity
+        );
 
         const changeset = [];
 
@@ -146,5 +135,9 @@ export default class EntityManager extends EntityManagerBase {
         playerContext.setTrackedEntities(trackedEntitiesNew);
 
         return changeset;
+    }
+
+    destroy() {
+        this._entityManager.detachAllListeners(this);
     }
 }

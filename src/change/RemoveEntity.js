@@ -1,10 +1,13 @@
-import types from './Types';
+import types from './types';
 
 export default class RemoveEntity {
 
     constructor({entity, id} = {}) {
         this._id = entity ? entity.getId() : id;
-        this.type = types.REMOVE_ENTITY;
+    }
+
+    get type() {
+        return types.REMOVE_ENTITY;
     }
 
     getId() {

@@ -7,8 +7,10 @@ export default class Stats {
         this._exp = exp;
         this._level = level;
         this._id = id;
+    }
 
-        this.type = types.STATS;
+    get type() {
+        return types.STATS;
     }
 
     getHp() {

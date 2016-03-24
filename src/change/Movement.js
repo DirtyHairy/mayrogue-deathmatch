@@ -7,7 +7,10 @@ export default class Movement {
         this._y = y;
         this._id = id;
         this._heading = heading;
-        this.type = types.MOVEMENT;
+    }
+
+    get type() {
+        return types.MOVEMENT;
     }
 
     getX() {
