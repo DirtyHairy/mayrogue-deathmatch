@@ -11,6 +11,10 @@ export default class DomainMap {
         this._buildDomainMap();
     }
 
+    getDomains() {
+        return this._domains;
+    }
+
     /*
      * Build the domain map.
      */

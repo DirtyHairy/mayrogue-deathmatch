@@ -1,11 +1,12 @@
 {
+    "esversion": 6,
     "node": true,
-    "esnext": true,
     "undef": true,
     "unused": true,
     "browser": true,
     "curly": true,
     "eqeqeq": true,
     "varstmt": true,
+    "forin": true,
     "predef": ["mayrogue"]
 }
