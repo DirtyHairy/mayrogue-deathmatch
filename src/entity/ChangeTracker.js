@@ -1,8 +1,8 @@
 import * as _ from 'lodash';
-import ChangeMovement from '../../change/Movement';
-import ChangeStats from '../../change/Stats';
-import ChangeRemoveEntity from '../../change/RemoveEntity';
-import ChangeAddEntity from '../../change/AddEntity';
+import ChangeMovement from '../change/Movement';
+import ChangeStats from '../change/Stats';
+import ChangeRemoveEntity from '../change/RemoveEntity';
+import ChangeAddEntity from '../change/AddEntity';
 
 export default class ChangeTracker {
 

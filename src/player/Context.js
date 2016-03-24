@@ -1,4 +1,4 @@
-import Rectangle from '../../geometry/Rectangle';
+import Rectangle from '../geometry/Rectangle';
 
 export default class PlayerContext {
 

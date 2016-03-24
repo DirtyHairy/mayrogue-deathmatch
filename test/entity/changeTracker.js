@@ -1,12 +1,12 @@
 /* global suite, test, setup */
 
-import PlayerContext from '../../../src/server/player/Context';
-import Entity from '../../../src/entity/Entity';
-import EntityManager from '../../../src/entity/Manager';
-import ChangeTracker from '../../../src/server/entity/ChangeTracker';
-import Stats from '../../../src/stats/Stats';
-import tiles from '../../../src/tiles';
-import changeTypes from '../../../src/change/types';
+import PlayerContext from '../../src/player/Context';
+import Entity from '../../src/entity/Entity';
+import EntityManager from '../../src/entity/Manager';
+import ChangeTracker from '../../src/entity/ChangeTracker';
+import Stats from '../../src/stats/Stats';
+import tiles from '../../src/tiles';
+import changeTypes from '../../src/change/types';
 
 import * as assert from 'assert';
 
