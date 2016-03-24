@@ -5,5 +5,7 @@
     "unused": true,
     "browser": true,
     "curly": true,
+    "eqeqeq": true,
+    "varstmt": true,
     "predef": ["mayrogue"]
 }
