@@ -33,15 +33,15 @@ export default class DomainMap {
                     let otherDomain;
 
                     // Has the field left of us a domain assigned?
-                    otherDomain = this.getDomain(x - 1, y);
-                    if (x > 0 && otherDomain > 0) {
+                    otherDomain = x > 0 ? this.getDomain(x - 1, y) : -1;
+                    if (otherDomain > 0) {
                         // -> Inherit the domain
                         domain = otherDomain;
                     }
 
                     // Has the field above us a domain assigned?
-                    otherDomain = this.getDomain(x, y - 1);
-                    if (y > 0 && otherDomain > 0) {
+                    otherDomain = y > 0 ? this.getDomain(x, y - 1) : -1;
+                    if (otherDomain > 0) {
                         // We still have no domain -> inherit from above
                         if (domain < 0) {
                             domain = otherDomain;
