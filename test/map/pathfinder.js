@@ -1,6 +1,6 @@
 /* global suite, test */
 
-import Pathfinder from '../../src/util/Pathfinder';
+import Pathfinder from '../../src/map/Pathfinder';
 import * as assert from 'assert';
 
 suite('A* Pathfinder', function() {
