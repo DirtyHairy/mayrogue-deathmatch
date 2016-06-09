@@ -2,6 +2,7 @@ import Observable from '../util/Observable';
 import tiles from '../tiles';
 import Rectangle from '../geometry/Rectangle';
 import Stats from '../stats/Stats';
+import DeadBrain from './brain/DeadBrain';
 
 export default class Entity extends Observable {
 
@@ -15,6 +16,8 @@ export default class Entity extends Observable {
         this._heading = heading;
         this._id = id;
         this._map = map;
+        this._brain = new DeadBrain();
+        this._brain.setEntity(this);
 
         this._boundingBox = new Rectangle({
             x: x,
@@ -144,6 +147,12 @@ export default class Entity extends Observable {
             heading: this._heading,
             role: this._role,
         };
+    }
+
+    replaceBrain(newBrain) {
+        this._brain.detach();
+        this._brain = newBrain;
+        this._brain.setEntity(this);
     }
 
     static unserialize(blob) {
