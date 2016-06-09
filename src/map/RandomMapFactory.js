@@ -1,4 +1,7 @@
 import tiles from '../tiles';
+import Map from './Map';
+import DomainMap from './DomainMap';
+import * as gamlib from '../vendor/gamlib-ai';
 
 export default class RandomMapFactory {
 
@@ -18,20 +21,31 @@ export default class RandomMapFactory {
 
         this._width = width;
         this._height = height;
+        this._smoothingFactor = 1;
         this._rng = rng;
     }
 
-    getWidth() {
-        return this._width;
+    create() {
+        let map = new Map(
+            this._width,
+            this._height
+        );
+
+        for (let x = 0; x < this._width; x++) {
+            for (let y = 0;  y < this._height; y++) {
+                map.updateField(x, y, this._randomTile());
+            }
+        }
+
+        for (let i = 0; i < this._smoothingFactor; i++) {
+            map = this._smooth(map);
+        }
+
+        this.connectDomains(map);
+
+        return map;
     }
 
-    getHeight() {
-        return this._height;
-    }
-
-    /*
-     * generate a random tile...
-     */
     _randomTile(candidates) {
         let weights;
 
@@ -43,14 +57,12 @@ export default class RandomMapFactory {
         }
 
         let norm = 0;
-        for (let weight of weights) {
-            norm += weight;
-        }
 
+        Object.keys(weights).forEach((key) => norm += weights[key]);
         let w = this._rng() * norm;
 
         for (let tile in weights) {
-            if (!weights.hasOwnProperty(tiles)) {
+            if (!weights.hasOwnProperty(tile)) {
                 continue;
             }
 
@@ -82,69 +94,74 @@ export default class RandomMapFactory {
     }
 
     /*
-     * smooth the generated world
-     *
      * @see http://roguebasin.roguelikedevelopment.org/index.php?title=Cellular_Automata_Method_for_Generating_Random_Cave-Like_Levels
      */
-    _smooth(dataIn) {
-        let dataOut = [];
+    _smooth(map) {
+        const newMap = new Map(this._width, this._height);
 
         for (let x = 0; x < this._width; x++) {
-            dataOut[x] = [];
             for (let y = 0; y < this._height; y++) {
-                if (this._isBorder(x, y) ||
-                    this._countSurroundingFloorTiles(dataIn, x, y) >= 5 ||
-                    this._countSurroundingFloorTiles(dataIn, x, y, {distance: 2, corners: false}) <= 2) {
-                    dataOut[x][y] = this._randomStone();
+                if (
+                    map.isBorder(x, y) ||
+                    map.countSurroundingFloorTiles(x, y) >= 5 ||
+                    map.countSurroundingFloorTiles(x, y, {distance: 2, corners: false}) <= 2
+                ) {
+                    newMap.updateField(x, y, this._randomStone());
                 } else {
-                    dataOut[x][y] = this._randomFloor();
+                    newMap.updateField(x, y, this._randomFloor());
                 }
             }
         }
 
-        return dataOut;
+        return newMap;
     }
 
-    /*
-     * check if x,y is a border tile
+    /**
+     * Find disconnected domains and reconnect them. The algorithm works by first identifying all domains
+     * and then using the A* pathfinder to connect them, removing obstacles along the way. We assign a high penality
+     * to unaccessible fields, so the pathfinder will keep the rock drilling to a minimum
+     *
+     * @private
      */
-    _isBorder(x, y) {
-        return x === 0 || y === 0 || x >= this._width - 1 || y >= this._height - 1;
-    }
+    connectDomains(map) {
 
-    /*
-     * count how many tiles around (x,y) are stone tiles (within one step)
-     */
-    _countSurroundingStoneTiles(data, x, y, {corners = true, distance = 2} = {}) {
-        let stoneTileCount = 0;
+        const domainMap = new DomainMap(
+            this._width,
+            this._height,
+            (x, y) => map.fieldAccessible(x, y)
+        );
 
-        for (let posX = x - distance; posX <= x + distance; posX++) {
-            for (let posY = y - distance; posY <= y + distance; posY++) {
+        let domains = domainMap.getDomains();
 
-                if (!this._insideMap(posX, posY)) {
-                    continue;
-                }
+        if (domains.length <= 1) {
+            return;
+        }
 
-                if (!corners && Math.abs(x - posX) === 2 && Math.abs(y - posY) === 2)  {
-                    continue;
-                }
+        let baseDomain = domains[0],
+            baseField = domainMap.findFieldInDomain(baseDomain);
 
-                if (tiles.STONE === data[posX][posY] ||
-                    tiles.STONE2 === data[posX][posY]) {
-                    stoneTileCount++;
+        let aStarGrid = new gamlib.AStarArray(this._width, this._height);
+        for (let x = 0; x < this._width; x++) {
+            for (let y = 0; y < this._height; y++) {
+                aStarGrid.setValue(x, y, map.fieldAccessible(x, y) ? 0 : 100);
+            }
+        }
+
+        for (let domain of domainMap.getDomains()) {
+            if (domain === baseDomain) {
+                continue;
+            }
+            let field = domainMap.findFieldInDomain(domain),
+                path = aStarGrid.find(baseField.x, baseField.y, field.x, field.y);
+
+            for (let node of path) {
+                let pos = node.position;
+                if (!map.fieldAccessible(pos.x, pos.y)) {
+                    map.updateField(pos.x, pos.y, this._randomFloor());
+                    aStarGrid.setValue(pos.x, pos.y, 0);
                 }
             }
         }
 
-        return stoneTileCount;
     }
-
-    _countSurroundingFloorTiles(data, x, y, options) {
-        return 9 - this._countSurroundingStoneTiles(data, x, y, options);
-    }
-
-    _insideMap(x, y) {
-        return x > 0 && x < this._width && y > 0 && y < this._height;
-    }
-
 }

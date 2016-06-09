@@ -32,7 +32,7 @@ export default class HoundBrain extends BrainStem {
     }
 
     detach() {
-        entity.removeListeners({
+        this._entity.removeListeners({
             attacked: this._onAttack
         }, this);
     }
