@@ -7,4 +7,15 @@ export default class AttackAction extends AbstractAction {
         return types.ATTACK;
     }
 
+    validate() {
+        return true;
+    }
+
+    serialize() {
+        return {};
+    }
+
+    static unserialize() {
+        return new AttackAction();
+    }
 }

@@ -86,6 +86,30 @@ var AggressiveWalker = Util.extend(Base, {
     },
 
     _onTick: function() {
+
+        const currentStrategy = this._getStrategy();
+        currentStrategy.tick();
+
+        switch (currentStrategy.type) {
+
+            case strategyTypes.HUNT:
+                break;
+
+            case strategyTypes.RANDOM_WALK:
+                break;
+
+        }
+
+        // If hunting, tick and keep hunting
+            // if can no longer hunt => start walking
+            // else keep hunting
+
+
+        // Try to find target
+            // found => start hunting
+            // not found => keep walking
+
+
         var me = this,
             oldStrategy = me._getStrategy(),
             path;

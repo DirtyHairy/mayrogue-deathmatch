@@ -1,17 +1,5 @@
-export default class DeadBrain {
+import BrainStem from './BrainStem';
 
-    constructor() {
-        this._entity = null;
-    }
-
-    tick() {}
-
-    setEntity(entity) {
-        this._entity = entity;
-    }
-
-    detach() {
-        this._entity = null;
-    }
+export default class DeadBrain extends BrainStem {
 
 }
