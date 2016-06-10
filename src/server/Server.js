@@ -113,8 +113,7 @@ export default class Server {
                 let action = Action.unserialize(data.action);
                 playerContext.getEntity().fireEvent('action', action);
 
-                // TODO: Implement this method, Doctor!
-                //playerContext.setGeneration(data.generation);
+                playerContext.setGeneration(data.generation);
             });
 
             socket.on('disconnect', () => {

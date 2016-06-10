@@ -43,6 +43,12 @@ export default class PlayerContext {
         return this;
     }
 
+    setGeneration(generation) {
+        this._generation = generation;
+
+        return this;
+    }
+
     _onTick() {
         this._tick++;
         if (this._tick % 10 === 0) {
