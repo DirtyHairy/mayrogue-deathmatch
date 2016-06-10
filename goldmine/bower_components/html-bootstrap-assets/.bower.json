@@ -1,0 +1,28 @@
+{
+  "name": "html-bootstrap-assets",
+  "version": "2.3.2",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/brodavi/html-bootstrap-assets.git"
+  },
+  "main": [
+    "./css/bootstrap.css",
+    "./js/bootstrap.js"
+  ],
+  "ignore": [
+    "README.md"
+  ],
+  "dependencies": {
+    "jquery": ">=1.8.0 <2.1.0"
+  },
+  "homepage": "https://github.com/brodavi/html-bootstrap-assets",
+  "_release": "2.3.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.3.2",
+    "commit": "866c24e918b9071e38ba5621b0cdd000710c8a1d"
+  },
+  "_source": "https://github.com/brodavi/html-bootstrap-assets.git",
+  "_target": "~2.3.2",
+  "_originalSource": "html-bootstrap-assets"
+}
