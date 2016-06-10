@@ -158,7 +158,8 @@ export default class Server {
                 let action = Action.unserialize(data.action);
                 playerContext.getEntity().fireEvent('action', action);
 
-                playerContext.setGeneration(data.generation);
+                // TODO: Implement this method, Doctor!
+                //playerContext.setGeneration(data.generation);
             });
 
             socket.on('disconnect', () => {
@@ -181,7 +182,7 @@ export default class Server {
         const rng = newDefaultGenerator();
 
         const player = this._world.addNewRandomEntity({
-            shape: shapes[Math.floor(rng() * shapes.length)],
+            shape: shapes[Math.floor(rng() * Object.keys(shapes).length)],
             stats: new Stats({
                 hp: 20,
                 maxHp: 20,
@@ -218,7 +219,7 @@ export default class Server {
         for (let player of this._players) {
             let changeset = this._world.pickupChangeset(player);
 
-            if (changeset && changeset.length > 0) {
+            if (changeset.length > 0) {
                 player.getConnection().volatile.emit('update', {
                     generation: player.getGeneration(),
                     changeset: changeset.map(Change.serialize)

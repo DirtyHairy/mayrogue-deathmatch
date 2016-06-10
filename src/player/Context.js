@@ -18,7 +18,7 @@ export default class PlayerContext {
     }
 
     getConnection() {
-        return this._getConnection();
+        return this._connection;
     }
 
     getEntity() {

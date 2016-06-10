@@ -121,7 +121,7 @@ export default class World extends Observable {
     }
 
     pickupChangeset(playerContext) {
-        this._changeTracker.pickupChangeset(playerContext);
+        return this._changeTracker.pickupChangeset(playerContext);
     }
 
     /**

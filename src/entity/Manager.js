@@ -8,12 +8,19 @@ export default class EntityManager extends Observable {
 
         this._entities = [];
         this._entityMap = {};
+
+        this.attachListeners({action: this._onEntityAction}, this);
     }
 
     getEntities() {
         return this._entities;
     }
 
+    _onEntityAction(action, entity) {
+        if (action.validate()) {
+            entity.move(action.getDeltaX(), action.getDeltaY());
+        }
+    }
 
     addEntity(entity) {
         if (this.getEntityById(entity.getId())) {

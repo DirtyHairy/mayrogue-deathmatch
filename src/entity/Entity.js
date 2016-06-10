@@ -196,6 +196,10 @@ export default class Entity extends Observable {
         }
     }
 
+    move(deltaX, deltaY) {
+        const bb = this.getBoundingBox();
+        this.setXY(bb.getX() + deltaX, bb.getY() + deltaY);
+    }
 }
 
 Object.defineProperties(Entity, {
