@@ -56,51 +56,6 @@ export default class Server {
         this._startHartbeat();
     }
 
-    _initMiddleware2() {
-        const root = path.join(__dirname, '../../old-frontend-build');
-
-        this._app.get('/', function(req, res) {
-            res.sendfile(root + '/index.html');
-        });
-
-        this._app.get('/index.html', function(req, res) {
-            res.sendfile(root + '/index.html');
-        });
-
-        this._app.get('/bower_components/html-bootstrap-assets/css/bootstrap.min.css', function(req, res) {
-            res.sendfile(root + '/bootstrap.min.css');
-        });
-
-        this._app.get('/frontend/style.css', function(req, res) {
-            res.sendfile(root + '/style.css');
-        });
-
-        this._app.get('/frontend/require.js', function(req, res) {
-            res.sendfile(root + '/require.js');
-        });
-
-        this._app.get('/frontend/main.js', function(req, res) {
-            res.sendfile(root + '/main.js');
-        });
-
-        this._app.get('/frontend/application.js', function(req, res) {
-            res.sendfile(root + '/application.js');
-        });
-
-        this._app.get('/frontend/res/terrain.gif', function(req, res) {
-            res.sendfile(root + '/terrain.gif');
-        });
-
-        this._app.get('/frontend/res/actors.gif', function(req, res) {
-            res.sendfile(root + '/actors.gif');
-        });
-
-        this._app.get('/socket.io/socket.io.js', function(req, res) {
-            res.sendfile(root + '/socket.io.js');
-        });
-    }
-
-
     _initMiddleware() {
         //this._app.use(serveStatic(this._root));
 
