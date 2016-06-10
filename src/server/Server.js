@@ -7,7 +7,7 @@ import World from '../world/World';
 import RandomMapFactory from '../map/RandomMapFactory';
 import {newDefaultGenerator} from '../random/generatorFactory';
 import io from 'socket.io';
-import * as Action from '../Action/index';
+import * as Action from '../action/index';
 import tiles from '../tiles';
 import Stats from '../stats/Stats';
 import Entity from '../entity/Entity';

@@ -1,4 +1,4 @@
-import EntityManager from '../Entity/Manager';
+import EntityManager from '../entity/Manager';
 import Observable from '../util/Observable';
 import Entity from '../entity/Entity';
 import Rectangle from '../geometry/Rectangle';
