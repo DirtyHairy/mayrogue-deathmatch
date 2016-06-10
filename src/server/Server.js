@@ -13,6 +13,8 @@ import Stats from '../stats/Stats';
 import Entity from '../entity/Entity';
 import PlayerContext from '../player/Context';
 import * as Change from '../change/index';
+import HoundBrain from '../entity/brain/Hound';
+import ZombieBrain from '../entity/brain/Zombie';
 
 export default class Server {
 
@@ -52,6 +54,10 @@ export default class Server {
 
         this._server.listen(this._port);
         mayrogue.log.info(`server running, listening on port ${this._port}`);
+
+        for (let i = 0; i < 40; i++) {
+            this._createMonster();
+        }
 
         this._startHartbeat();
     }
@@ -186,5 +192,29 @@ export default class Server {
 
     _startHartbeat() {
         setInterval(() => this._processCycle(), 200);
+    }
+
+    _createMonster() {
+        const rng = newDefaultGenerator();
+
+        const shapes = [tiles.LICHKING, tiles.CTHULHU_GUY];
+        const shape = shapes[Math.floor(rng() * shapes.length)];
+
+        const entity = this._world.addNewRandomEntity({
+            shape: shape,
+            stats: new Stats({
+                hp: 10,
+                maxHp: 10
+            })
+        });
+
+        let brain = null;
+        if (Math.random() < 0.3) {
+            brain = new HoundBrain(rng);
+        } else {
+            brain = new ZombieBrain(rng);
+        }
+
+        brain.setEntity(entity);
     }
 }
