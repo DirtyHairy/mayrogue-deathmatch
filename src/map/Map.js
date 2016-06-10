@@ -37,7 +37,7 @@ export default class Map {
 
         for (let x = x0; x < x0 + width; x++) {
             for (let y = y0; y < y0 + height; y++) {
-                if (!tiles.properties[width._data[x][y]].walkable) {
+                if (!tiles.properties[this._data[x][y]].walkable) {
                     return false;
                 }
             }

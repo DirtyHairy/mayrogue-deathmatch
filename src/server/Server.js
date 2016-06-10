@@ -3,6 +3,16 @@ import * as http from 'http';
 import serveStatic from 'serve-static';
 import morgan from 'morgan';
 import express from 'express';
+import World from '../world/World';
+import RandomMapFactory from '../map/RandomMapFactory';
+import {newDefaultGenerator} from '../random/generatorFactory';
+import io from 'socket.io';
+import * as Action from '../Action/index';
+import tiles from '../tiles';
+import Stats from '../stats/Stats';
+import Entity from '../entity/Entity';
+import PlayerContext from '../player/Context';
+import * as Change from '../change/index';
 
 export default class Server {
 
@@ -14,6 +24,7 @@ export default class Server {
         this._app = null;
         this._server = null;
         this._io = null;
+        this._players = [];
     }
 
     setPort(port) {
@@ -32,14 +43,193 @@ export default class Server {
             this._app.use(morgan('dev'));
         }
 
-        this._initMiddleware();
-        this._server.listen(this._port);
+        this._initWorld();
 
+        this._initMiddleware();
+
+        this._io = io(this._server);
+        this._bindConnectionHandlers();
+
+        this._server.listen(this._port);
         mayrogue.log.info(`server running, listening on port ${this._port}`);
+
+        this._startHartbeat();
     }
+
+    _initMiddleware2() {
+        const root = path.join(__dirname, '../../old-frontend-build');
+
+        this._app.get('/', function(req, res) {
+            res.sendfile(root + '/index.html');
+        });
+
+        this._app.get('/index.html', function(req, res) {
+            res.sendfile(root + '/index.html');
+        });
+
+        this._app.get('/bower_components/html-bootstrap-assets/css/bootstrap.min.css', function(req, res) {
+            res.sendfile(root + '/bootstrap.min.css');
+        });
+
+        this._app.get('/frontend/style.css', function(req, res) {
+            res.sendfile(root + '/style.css');
+        });
+
+        this._app.get('/frontend/require.js', function(req, res) {
+            res.sendfile(root + '/require.js');
+        });
+
+        this._app.get('/frontend/main.js', function(req, res) {
+            res.sendfile(root + '/main.js');
+        });
+
+        this._app.get('/frontend/application.js', function(req, res) {
+            res.sendfile(root + '/application.js');
+        });
+
+        this._app.get('/frontend/res/terrain.gif', function(req, res) {
+            res.sendfile(root + '/terrain.gif');
+        });
+
+        this._app.get('/frontend/res/actors.gif', function(req, res) {
+            res.sendfile(root + '/actors.gif');
+        });
+
+        this._app.get('/socket.io/socket.io.js', function(req, res) {
+            res.sendfile(root + '/socket.io.js');
+        });
+    }
+
 
     _initMiddleware() {
-        this._app.use(serveStatic(this._root));
+        //this._app.use(serveStatic(this._root));
+
+        const root = path.join(__dirname, '../../goldmine');
+
+        this._app.get('/', function(req, res) {
+            res.sendfile(root + '/frontend/index.html');
+        });
+
+        this._app.get('/index.html', function(req, res) {
+            res.sendfile(root + '/frontend/index.html');
+        });
+
+        this._app.use('/frontend/', serveStatic(root + '/frontend/'));
+        this._app.use('/shared/', serveStatic(root + '/shared/'));
+        this._app.use('/bower_components/', serveStatic(root + '/bower_components/'));
     }
 
+    _initWorld() {
+        const factory = new RandomMapFactory(
+            35,
+            40,
+            newDefaultGenerator()
+        );
+        const map = factory.create();
+
+        this._world = new World({map: map});
+    }
+
+    // TODO: this should be refactored into a playerConnection class
+    _bindConnectionHandlers() {
+        this._io.on('connection', (socket) => {
+            let playerContext = null,
+                player = null;
+
+            socket.on('login', (data) => {
+                playerContext = this._initPlayer(socket, data.username);
+                player = playerContext.getEntity();
+                this._addPlayer(playerContext);
+
+                // We only push the player himself during init, the remaining
+                // entities will be part of the first update
+                socket.emit('welcome', {
+                    map: this._world.getMap().serialize(),
+                    entities: [player.serialize()],
+                    playerId: player.getId()
+                });
+            });
+
+            socket.on('action', (data) => {
+                if (!playerContext) {
+                    return;
+                }
+
+                let action = Action.unserialize(data.action);
+                playerContext.getEntity().fireEvent('action', action);
+
+                playerContext.setGeneration(data.generation);
+            });
+
+            socket.on('disconnect', () => {
+                if (player) {
+                    this._world.removeEntity(player);
+                }
+                this._removePlayer(playerContext);
+            });
+        });
+    }
+
+    _initPlayer(socket, username) {
+
+        const shapes = {
+            0: tiles.HUNTER,
+            1: tiles.WARRIOR,
+            2: tiles.MAGE
+        };
+
+        const rng = newDefaultGenerator();
+
+        const player = this._world.addNewRandomEntity({
+            shape: shapes[Math.floor(rng() * shapes.length)],
+            stats: new Stats({
+                hp: 20,
+                maxHp: 20,
+                name: username
+            }),
+            role: Entity.PLAYER
+        });
+
+        const playerContext = new PlayerContext({
+            entity: player,
+            connection: socket
+        });
+
+        return playerContext;
+    }
+
+    _addPlayer(playerContext) {
+        this._players.push(playerContext);
+    }
+
+    _removePlayer(playerContext) {
+        const i = this._players.indexOf(playerContext);
+        if (i !== -1) {
+            this._players.splice(i, 1);
+        }
+    }
+
+    _processCycle() {
+
+        for (let entity of this._world.getEntities()) {
+            entity.fireEvent('tick');
+        }
+
+        for (let player of this._players) {
+            let changeset = this._world.pickupChangeset(player);
+
+            if (changeset && changeset.length > 0) {
+                player.getConnection().volatile.emit('update', {
+                    generation: player.getGeneration(),
+                    changeset: changeset.map(Change.serialize)
+                });
+            }
+        }
+
+        this._world.clearChanges();
+    }
+
+    _startHartbeat() {
+        setInterval(() => this._processCycle(), 200);
+    }
 }

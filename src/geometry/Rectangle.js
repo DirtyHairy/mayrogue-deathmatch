@@ -17,6 +17,14 @@ export default class Rectangle {
         return this._y;
     }
 
+    setX(x) {
+        this._x = x;
+    }
+
+    setY(y) {
+        this._y = y;
+    }
+
     getWidth() {
         return this._width;
     }
