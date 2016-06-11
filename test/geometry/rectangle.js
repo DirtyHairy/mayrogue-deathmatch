@@ -107,6 +107,66 @@ suite('Rectangles', function() {
         assert.ok(!r1.intersect(r2));
     });
 
+    test('Rectangle intersection: Small rectancles next to each other ', () => {
+        const r1 = new Rectangle({
+            x: 0, y: 0, width: 1, height: 1
+        });
+        const r2 = new Rectangle({
+            x: 1, y: 0, width: 1, height: 1
+        });
+        assert.ok(!r1.intersect(r2));
+    });
+
+    test('Rectangle intersection: Small rectancles over each other ', () => {
+        const r1 = new Rectangle({
+            x: 1, y: 0, width: 1, height: 1
+        });
+        const r2 = new Rectangle({
+            x: 1, y: 0, width: 1, height: 1
+        });
+        assert.ok(r1.intersect(r2));
+    });
+
+    test('Rectangle intersection: Small rectancle next to big one ', () => {
+        const r1 = new Rectangle({
+            x: 0, y: 0, width: 1, height: 1
+        });
+        const r2 = new Rectangle({
+            x: 1, y: 0, width: 2, height: 2
+        });
+        assert.ok(!r1.intersect(r2));
+    });
+
+    test('Rectangle intersection: Small rectancle next to big one ', () => {
+        const r1 = new Rectangle({
+            x: 2, y: 1, width: 1, height: 1
+        });
+        const r2 = new Rectangle({
+            x: 0, y: 0, width: 2, height: 2
+        });
+        assert.ok(!r1.intersect(r2));
+    });
+
+    test('Rectangle intersection: Small rectancle next to big one ', () => {
+        const r1 = new Rectangle({
+            x: 1, y: 2, width: 1, height: 1
+        });
+        const r2 = new Rectangle({
+            x: 0, y: 0, width: 2, height: 2
+        });
+        assert.ok(!r1.intersect(r2));
+    });
+
+    test('Rectangle intersection: Small rectancle inside big one ', () => {
+        const r1 = new Rectangle({
+            x: 1, y: 1, width: 1, height: 1
+        });
+        const r2 = new Rectangle({
+            x: 0, y: 0, width: 2, height: 2
+        });
+        assert.ok(r1.intersect(r2));
+    });
+
     test('Cloning', function() {
         const r1 = new Rectangle({
                 x: -1,

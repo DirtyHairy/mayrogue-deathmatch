@@ -82,4 +82,7 @@ export default class EntityManager extends Observable {
         return this._entities.filter(e => rect.intersect(e.getBoundingBox()));
     }
 
+    doEntitiesIntersectWith(rect) {
+        return this.entitiesIntersectingWith(rect).length !== 0;
+    }
 }

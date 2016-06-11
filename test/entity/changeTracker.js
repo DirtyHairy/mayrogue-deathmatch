@@ -22,8 +22,8 @@ suite('Server-side entity manager', function() {
         });
 
         playerEntity = new Entity({
-            x: 0,
-            y: 0,
+            x: 5,
+            y: 5,
             id: 0,
             role: Entity.Player,
             stats: stats,
@@ -126,7 +126,7 @@ suite('Server-side entity manager', function() {
         tracker.pickupChangeset(context);
         tracker.clearChanges();
 
-        e3.setXY(-1, -1);
+        e3.setXY(0, 0);
         const changes = tracker.pickupChangeset(context);
 
         assert.deepEqual(changes.map(c => c.type), [changeTypes.ADD_ENTITY]);
@@ -137,7 +137,7 @@ suite('Server-side entity manager', function() {
         tracker.pickupChangeset(context);
         tracker.clearChanges();
 
-        e2.setXY(-1, -1);
+        e2.setXY(0, 0);
         const changes = tracker.pickupChangeset(context);
 
         assert.deepEqual(changes.map(c => c.type), [changeTypes.MOVEMENT]);
@@ -157,7 +157,7 @@ suite('Server-side entity manager', function() {
         tracker.clearChanges();
 
         em.addEntity(e4);
-        e4.setXY(-1, -1);
+        e4.setXY(0, 0);
         const changes = tracker.pickupChangeset(context);
 
         assert.deepEqual(changes.map(c => c.type), [changeTypes.ADD_ENTITY]);

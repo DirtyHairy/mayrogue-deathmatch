@@ -55,7 +55,7 @@ export default class Server {
         this._server.listen(this._port);
         mayrogue.log.info(`server running, listening on port ${this._port}`);
 
-        for (let i = 0; i < 40; i++) {
+        for (let i = 0; i < 5; i++) {
             this._createMonster();
         }
 

@@ -19,10 +19,12 @@ export default class Rectangle {
 
     setX(x) {
         this._x = x;
+        return this;
     }
 
     setY(y) {
         this._y = y;
+        return this;
     }
 
     getWidth() {
@@ -39,10 +41,19 @@ export default class Rectangle {
     }
 
     intersect(rect) {
-        return !((this._x + this._width < rect._x) ||
-                 (this._x > rect._x + rect._width)  ||
-                 (this._y + this._height < rect._y) ||
-                 (this._y > rect._y + rect._height));
+        if (this._x + this._width <= rect._x) {
+            return false; // this is left of rect
+        }
+        if (this._x >= rect._x + rect._width) {
+            return false; // this is right of rect
+        }
+        if (this._y + this._height <= rect._y) {
+            return false; // this is above rect
+        }
+        if (this._y >= rect._y + rect._height) {
+            return false; // this is below rect
+        }
+        return true; // boxes overlap
     }
 
     clone() {

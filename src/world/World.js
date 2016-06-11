@@ -83,6 +83,12 @@ export default class World extends Observable {
         return this._map.fieldAccessible(x, y) && this._entityManager.fieldAccessible(x, y, entity);
     }
 
+    rectFreeToPlaceEntity(rect) {
+        const mapAccessible = this._map.rectAccessible(rect);
+        const entityManagerAccessible = !this._entityManager.doEntitiesIntersectWith(rect);
+        return mapAccessible && entityManagerAccessible;
+    }
+
     entitiesIntersectingWith(rect) {
         return this._entityManager.entitiesIntersectingWith(rect);
     }
@@ -154,7 +160,7 @@ export default class World extends Observable {
         do {
             rect.setX(Math.floor(rng() * (mapWidth - width)));
             rect.setY(Math.floor(rng() * (mapHeight - height)));
-        } while (!(accessible = this.rectAccessible(rect)) && thisTry++ < maxTries);
+        } while (!(accessible = this.rectFreeToPlaceEntity(rect)) && thisTry++ < maxTries);
 
         if (accessible) {
             return rect;
@@ -172,7 +178,7 @@ export default class World extends Observable {
                 }
             }
             i++;
-        } while (!(accessible = this.rectAccessible(rect))  && i < mapWidth * mapHeight);
+        } while (!(accessible = this.rectFreeToPlaceEntity(rect))  && i < mapWidth * mapHeight);
 
         return accessible ? rect : null;
     }
