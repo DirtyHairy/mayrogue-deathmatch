@@ -22,7 +22,7 @@ export default class AddEntity {
     }
 
     serialize() {
-        return this._entity.serialize()
+        return this._entity.serialize();
     }
 
     static unserialize(blob) {
