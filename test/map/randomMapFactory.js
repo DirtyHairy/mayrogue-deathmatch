@@ -48,7 +48,7 @@ suite('RandomMapFactory', () => {
         const factory2 = new RandomMapFactory(10, 10, newDefaultGenerator(1));
         const map2 = factory2.create();
 
-        assert.deepEqual(map1, map2);
+        assert.deepEqual(map1._data, map2._data);
     });
 
     function testMapHasOnlyOneDomain(i) {
