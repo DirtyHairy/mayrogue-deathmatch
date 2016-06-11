@@ -133,7 +133,7 @@ export default class Map {
     }
 
     createPathfinder() {
-        const pathfinder = new Pathfinder();
+        const pathfinder = new Pathfinder(this._width, this._height);
         for (let x = 0; x < this._width; x++) {
             for (let y = 0; y < this._height; y++) {
                 if (this.fieldAccessible(x, y)) {
