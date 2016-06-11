@@ -7,7 +7,7 @@ import DeadBrain from './brain/DeadBrain';
 export default class Entity extends Observable {
 
     constructor({
-        shape = 0, role = 0, heading = 'east', id = 0, map = null, x = 0, y = 0, stats = null
+        shape = 0, role = 0, heading = 'east', id = 0, map = null, x = 0, y = 0, stats = null, healingRate = 15
     } = {}) {
         super();
 
@@ -18,6 +18,8 @@ export default class Entity extends Observable {
         this._map = map;
         this._brain = new DeadBrain();
         this._brain.setEntity(this);
+        this._healingRate = healingRate;
+        this._healingCounter = 0;
 
         this._boundingBox = new Rectangle({
             x: x,
@@ -207,6 +209,13 @@ export default class Entity extends Observable {
             if (action) {
                 this.fireEvent('action', action);
             }
+        }
+
+        if (this._healingCounter >= this._healingRate) {
+            this._healingCounter = 0;
+            this._stats.heal(1);
+        } else {
+            this._healingCounter++;
         }
     }
 }
