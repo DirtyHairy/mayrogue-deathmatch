@@ -197,7 +197,13 @@ export default class Server {
     _createMonster() {
         const rng = newDefaultGenerator();
 
-        const shapes = [tiles.LICHKING, tiles.CTHULHU_GUY];
+        const shapes = [
+            tiles.LICHKING,
+            tiles.OGRE,
+            tiles.SPIDER,
+            tiles.SNAKE,
+            tiles.CTHULHU_GUY
+        ];
         const shape = shapes[Math.floor(rng() * shapes.length)];
 
         const entity = this._world.addNewRandomEntity({
