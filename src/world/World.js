@@ -20,6 +20,8 @@ export default class World extends Observable {
             this._entityManager = new EntityManager();
         }
 
+        this._entityManager.setWorld(this);
+
         this._changeTracker = new ChangeTracker(this._entityManager);
 
         this._entityManager.attachListeners({
@@ -73,6 +75,10 @@ export default class World extends Observable {
 
     getMapData() {
         return this._map.getData();
+    }
+
+    findWay(x0, y0, x1, y1) {
+        return this._map.findWay(x0, y0, x1, y1);
     }
 
     rectAccessible(rect, entity) {
@@ -181,5 +187,76 @@ export default class World extends Observable {
         } while (!(accessible = this.rectFreeToPlaceEntity(rect))  && i < mapWidth * mapHeight);
 
         return accessible ? rect : null;
+    }
+
+    /**
+     * TODO: should be moved to dedicated combat managment class
+     *
+     * @param attacker
+     */
+    executeAttack(attacker)
+    {
+        const rect = attacker.getAttackTarget();
+
+        const possibleEnemies = this._entityManager.entitiesIntersectingWith(rect);
+        for (let entity of possibleEnemies) {
+            let hp = entity.getStats().getHp() - 1;
+
+            entity.attacked(attacker);
+
+            if (hp <= 0) {
+                this.respawn(entity);
+                this.experience(attacker, entity);
+            } else {
+                entity.getStats().setHp(hp);
+            }
+        }
+    }
+
+    experience(winner, looser) {
+        if (winner.getRole() === Entity.PLAYER) {
+            let receivedExp = this._getReceivedExp(winner, looser),
+                exp = winner.getStats().getExp() + receivedExp,
+                neededExp = winner.getStats().getNeededExp();
+
+            if (exp >= neededExp) {
+                winner.getStats().setLevel(winner.getStats().getLevel() + 1);
+            }
+            winner.getStats().setExp(exp);
+        }
+    }
+
+    respawn(entity) {
+        this._warpEntity(entity);
+        entity.getStats().setHp(entity.getStats().getMaxHp());
+    }
+
+    /**
+     * TODO: should be moved to dedicated combat managment class
+     *
+     * @param attacker
+     * @param entity
+     * @returns {number}
+     * @private
+     */
+    _getReceivedExp(attacker, entity) {
+        let multiplier = entity.getRole() === Entity.PLAYER ? 1.5 : 1,
+            basicExp = entity.getRole() === Entity.PLAYER ? 10 : 5,
+            entityLevel = entity.getStats().getLevel() || 1,
+            attackerLevel = attacker.getStats().getLevel() || 1;
+
+        return Math.ceil(
+            multiplier * basicExp * entityLevel / 5 *
+            Math.pow(2 * entityLevel + 10, 2.5) /
+            Math.pow(entityLevel + attackerLevel + 10, 2.5) + 1
+        );
+    }
+
+    _warpEntity(entity, maxTries) {
+        let boundingBox = entity.getBoundingBox(),
+            placement = this.getFreeRandomRect(boundingBox.getWidth(), boundingBox.getHeight(), maxTries);
+        if (placement) {
+            entity.setXY(placement.getX(), placement.getY());
+        }
     }
 }

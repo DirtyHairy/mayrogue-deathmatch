@@ -200,6 +200,15 @@ export default class Entity extends Observable {
         const bb = this.getBoundingBox();
         this.setXY(bb.getX() + deltaX, bb.getY() + deltaY);
     }
+
+    tick() {
+        if (this._brain) {
+            let action = this._brain.tick();
+            if (action) {
+                this.fireEvent('action', action);
+            }
+        }
+    }
 }
 
 Object.defineProperties(Entity, {

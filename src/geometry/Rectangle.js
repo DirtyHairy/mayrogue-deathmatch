@@ -35,6 +35,16 @@ export default class Rectangle {
         return this._height;
     }
 
+    setWidth(width) {
+        this._width = width;
+        return this;
+    }
+
+    setHeight(height) {
+        this._height = height;
+        return this;
+    }
+
     isInside(x, y) {
         return (x >= this._x) && (x < this._x + this._width) &&
             (y >= this._y) && (y < this._y + this._height);

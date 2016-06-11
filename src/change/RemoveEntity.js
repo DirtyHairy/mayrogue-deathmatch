@@ -24,13 +24,11 @@ export default class RemoveEntity {
     }
 
     serialize() {
-        return {
-            id: this._id
-        };
+        return this._id;
     }
 
     static unserialize(blob) {
-        return new RemoveEntity(blob);
+        return new RemoveEntity({id: blob});
     }
 
     destroy() {}

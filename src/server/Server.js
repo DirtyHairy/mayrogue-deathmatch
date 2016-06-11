@@ -55,7 +55,7 @@ export default class Server {
         this._server.listen(this._port);
         mayrogue.log.info(`server running, listening on port ${this._port}`);
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 40; i++) {
             this._createMonster();
         }
 
@@ -173,7 +173,7 @@ export default class Server {
     _processCycle() {
 
         for (let entity of this._world.getEntities()) {
-            entity.fireEvent('tick');
+            entity.tick();
         }
 
         for (let player of this._players) {
@@ -209,12 +209,12 @@ export default class Server {
         });
 
         let brain = null;
-        if (Math.random() < 0.3) {
+        if (rng() < 0.3) {
             brain = new HoundBrain(rng);
         } else {
             brain = new ZombieBrain(rng);
         }
 
-        brain.setEntity(entity);
+        entity.replaceBrain(brain);
     }
 }

@@ -80,7 +80,7 @@ export default class Stats extends Observable {
     }
 
     getNeededExp() {
-        return Math.floor(4 * Math.pow((this._level() || 1) + 1, 3) / 5);
+        return Math.floor(4 * Math.pow((this._level || 1) + 1, 3) / 5);
     }
 
     heal(healed) {

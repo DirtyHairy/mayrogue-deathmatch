@@ -1,4 +1,5 @@
 import tiles from '../tiles';
+import Pathfinder from './Pathfinder';
 
 export default class Map {
 
@@ -6,6 +7,7 @@ export default class Map {
         this._width = width;
         this._height = height;
         this._data = this._initData();
+        this._pathfinder = null;
     }
 
     getWidth() {
@@ -124,6 +126,28 @@ export default class Map {
             }
         }
         return data;
+    }
+
+    finalize() {
+        this._pathfinder = this.createPathfinder();
+    }
+
+    createPathfinder() {
+        const pathfinder = new Pathfinder();
+        for (let x = 0; x < this._width; x++) {
+            for (let y = 0; y < this._height; y++) {
+                if (this.fieldAccessible(x, y)) {
+                    pathfinder.setAccessible(x, y);
+                } else {
+                    pathfinder.setInaccessible(x, y);
+                }
+            }
+        }
+        return pathfinder;
+    }
+
+    findWay(x0, y0, x1, y1) {
+        return this._pathfinder.findPath(x0, y0, x1, y1);
     }
 
 }

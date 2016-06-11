@@ -116,4 +116,16 @@ suite('The entity manager', function() {
         );
     });
 
+    test('Entities in rect', () => {
+        const em = new EntityManager(),
+            e1 = new Entity({x: 5, y: 5, id: 1, shape: tiles.HUNTER});
+        em.addEntity(e1);
+
+        const rect = new Rectangle({x: 3, y: 3, width: 10, height: 10});
+        const actual = em.entitiesIntersectingWith(rect);
+
+        assert.ok(actual.length, 1);
+        assert.ok(actual[0].getId(), 1);
+    });
+
 });

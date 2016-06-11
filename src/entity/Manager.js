@@ -1,5 +1,6 @@
 import Observable from '../util/Observable';
 import * as _ from 'lodash';
+import actionTypes from '../action/types';
 
 export default class EntityManager extends Observable {
 
@@ -8,8 +9,13 @@ export default class EntityManager extends Observable {
 
         this._entities = [];
         this._entityMap = {};
+        this._world = null;
 
         this.attachListeners({action: this._onEntityAction}, this);
+    }
+
+    setWorld(world) {
+        this._world = world;
     }
 
     getEntities() {
@@ -17,8 +23,21 @@ export default class EntityManager extends Observable {
     }
 
     _onEntityAction(action, entity) {
-        if (action.validate()) {
-            entity.move(action.getDeltaX(), action.getDeltaY());
+        if (!action.validate()) {
+            return;
+        }
+
+        switch (action.type) {
+            case actionTypes.ATTACK:
+                if (this._world) {
+                    this._world.executeAttack(entity);
+                }
+                break;
+            case actionTypes.MOVE:
+                entity.move(action.getDeltaX(), action.getDeltaY());
+                break;
+            default:
+                break;
         }
     }
 

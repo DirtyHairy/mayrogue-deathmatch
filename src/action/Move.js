@@ -3,7 +3,7 @@ import AbstractAction from './Abstract';
 
 export default class MoveAction extends AbstractAction {
 
-    constructor({deltaX, deltaY}, deadTime) {
+    constructor({deltaX = 0, deltaY = 0}, deadTime) {
         super(deadTime);
 
         this._deltaX = deltaX;

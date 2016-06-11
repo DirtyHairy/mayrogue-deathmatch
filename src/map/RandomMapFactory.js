@@ -43,6 +43,8 @@ export default class RandomMapFactory {
 
         this.connectDomains(map);
 
+        map.finalize();
+
         return map;
     }
 

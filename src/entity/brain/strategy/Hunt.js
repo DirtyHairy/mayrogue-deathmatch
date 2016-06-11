@@ -41,8 +41,8 @@ export default class Hunt
             rangeRect = new Rectangle({
                 x: boundingBox.getX() - 1,
                 y: boundingBox.getY() - 1,
-                width: boundingBox.width() + 2,
-                height: boundingBox.height() + 2
+                width: boundingBox.getWidth() + 2,
+                height: boundingBox.getHeight() + 2
             });
 
         if (this._entity.getAttackTarget().intersect(rangeRect)) {

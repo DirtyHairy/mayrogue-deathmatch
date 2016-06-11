@@ -6,12 +6,13 @@ import Rectangle from '../../geometry/Rectangle';
 
 export default class HoundBrain extends BrainStem {
 
-    constructor(rng, {walkPropability = 0.3, trackDistance = 6, sightDistance = 5} = {}) {
+    constructor(rng, {attackProbability = 0.8, walkPropability = 0.3, trackDistance = 6, sightDistance = 5} = {}) {
         super(rng);
 
         this._walkPropability = walkPropability;
         this._trackDistance = trackDistance;
         this._sightDistance = sightDistance;
+        this._attackProbability = attackProbability;
     }
 
     setEntity(entity) {
@@ -84,7 +85,7 @@ export default class HoundBrain extends BrainStem {
             .entitiesIntersectingWith(sightRect)
             .filter(e => e !== this._entity);
 
-        return possibleVictims[Math.floor(this._rng() * possibleVictims.lenght)];
+        return possibleVictims[Math.floor(this._rng() * possibleVictims.length)];
     }
 
 }
