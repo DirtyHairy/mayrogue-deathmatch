@@ -1,7 +1,6 @@
 import types from './types';
 import AttackAction from '../../../action/Attack';
 import MoveAction from '../../../action/Move';
-import Rectangle from '../../../geometry/Rectangle';
 
 export default class Hunt
 {
@@ -37,15 +36,7 @@ export default class Hunt
             return null;
         }
 
-        const boundingBox = this._target.getBoundingBox(),
-            rangeRect = new Rectangle({
-                x: boundingBox.getX() - 1,
-                y: boundingBox.getY() - 1,
-                width: boundingBox.getWidth() + 2,
-                height: boundingBox.getHeight() + 2
-            });
-
-        if (this._entity.getAttackTarget().intersect(rangeRect)) {
+        if (this._target.getBoundingBox().intersect(this._entity.getAttackTarget())) {
             return this._randomChoice(this._attackProbability) ? new AttackAction() : null;
         }
 
