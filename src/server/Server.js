@@ -78,6 +78,8 @@ export default class Server {
         this._app.use('/frontend/', serveStatic(root + '/frontend/'));
         this._app.use('/shared/', serveStatic(root + '/shared/'));
         this._app.use('/bower_components/', serveStatic(root + '/bower_components/'));
+
+        this._app.use('/new/', serveStatic(path.join(__dirname, '../../dist')));
     }
 
     _initWorld() {
