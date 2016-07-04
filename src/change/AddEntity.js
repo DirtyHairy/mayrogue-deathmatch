@@ -26,7 +26,7 @@ export default class AddEntity {
     }
 
     static unserialize(blob) {
-        return new AddEntity(Entity.unserialize(blob.entity));
+        return new AddEntity(Entity.unserialize(blob));
     }
 
     destroy() {}

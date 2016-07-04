@@ -20,7 +20,7 @@ export default class Server {
 
     constructor() {
         this._port = 3000;
-        this._root = path.join(__dirname, '../../www');
+        this._root = path.join(__dirname, '../../dist');
         this._production = false;
 
         this._app = null;
@@ -63,23 +63,7 @@ export default class Server {
     }
 
     _initMiddleware() {
-        //this._app.use(serveStatic(this._root));
-
-        const root = path.join(__dirname, '../../goldmine');
-
-        this._app.get('/', function(req, res) {
-            res.sendfile(root + '/frontend/index.html');
-        });
-
-        this._app.get('/index.html', function(req, res) {
-            res.sendfile(root + '/frontend/index.html');
-        });
-
-        this._app.use('/frontend/', serveStatic(root + '/frontend/'));
-        this._app.use('/shared/', serveStatic(root + '/shared/'));
-        this._app.use('/bower_components/', serveStatic(root + '/bower_components/'));
-
-        this._app.use('/new/', serveStatic(path.join(__dirname, '../../dist')));
+        this._app.use(serveStatic(this._root));
     }
 
     _initWorld() {

@@ -52,6 +52,8 @@ module.exports = function(grunt) {
                 files: [
                     {src: ['www/index.html'], dest: 'dist/index.html', filter: 'isFile'},
                     {src: ['www/css/style.css'], dest: 'dist/css/style.css', filter: 'isFile'},
+                    {src: ['www/img/actors.gif'], dest: 'dist/img/actors.gif', filter: 'isFile'},
+                    {src: ['www/img/terrain.gif'], dest: 'dist/img/terrain.gif', filter: 'isFile'},
                     {src: ['goldmine/bower_components/html-bootstrap-assets/css/bootstrap.min.css'], dest: 'dist/css/bootstrap-min.css', filter: 'isFile'},
                     {src: ['goldmine/bower_components/html-bootstrap-assets/js/bootstrap.min.js'], dest: 'dist/js/bootstrap-min.js', filter: 'isFile'},
                     {src: ['goldmine/bower_components/jquery/jquery.min.js'], dest: 'dist/js/jquery-min.js', filter: 'isFile'}

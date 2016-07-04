@@ -3,10 +3,14 @@ import Pathfinder from './Pathfinder';
 
 export default class Map {
 
-    constructor(width, height) {
+    constructor(width, height, data) {
         this._width = width;
         this._height = height;
-        this._data = this._initData();
+        if (data) {
+            this._data = data;
+        } else {
+            this._data = this._initData();
+        }
         this._pathfinder = null;
     }
 
@@ -16,6 +20,10 @@ export default class Map {
 
     getHeight() {
         return this._height;
+    }
+
+    getData() {
+        return this._data;
     }
 
     fieldAccessible(x, y) {
@@ -110,11 +118,11 @@ export default class Map {
     }
 
     static unserialize(blob) {
-        return new Map({
-            width: blob.width,
-            height: blob.height,
-            data: blob.data
-        });
+        return new Map(
+            blob.width,
+            blob.height,
+            blob.data
+        );
     }
 
     _initData() {

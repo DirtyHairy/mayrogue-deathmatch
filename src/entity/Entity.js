@@ -158,7 +158,8 @@ export default class Entity extends Observable {
     }
 
     static unserialize(blob) {
-        blob.stats = Stats.unserialize(blob.stats);
+        const stats = Stats.unserialize(blob.stats);
+        blob.stats = stats;
         return new Entity(blob);
     }
 
