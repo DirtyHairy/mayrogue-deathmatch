@@ -1,4 +1,5 @@
 import Observable from '../util/Observable';
+import * as _ from 'lodash';
 
 export default class MetaControl extends Observable {
 
