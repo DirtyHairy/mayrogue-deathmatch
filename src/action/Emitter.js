@@ -12,6 +12,8 @@ export default class ActionEmitter extends Observable {
 
         this._timeoutHandle = null;
         this._defaultDeadTime = 100;
+        this._player = null;
+        this._control = null;
 
         if (control) {
             this.setControl(control);
@@ -23,6 +25,12 @@ export default class ActionEmitter extends Observable {
         this._unbindControlListeners();
         this._control = control;
         this._bindControlListeners();
+
+        return this;
+    }
+
+    setPlayer(player) {
+        this._player = player;
     }
 
     _unbindControlListeners() {
@@ -84,7 +92,7 @@ export default class ActionEmitter extends Observable {
                 deadTime = action ? action.getDeadTime() : this._defaultDeadTime;
 
             if (action) {
-                this.fireEvent('action', action);
+                this.fireEvent('action', action, this._player);
             }
 
             this._timeoutHandle = setTimeout(this._dispatch.bind(this), deadTime);

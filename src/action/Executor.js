@@ -3,6 +3,9 @@ import types from './types';
 export default class ActionExecutor {
 
     constructor({source, world}) {
+        this._source = null;
+        this._world = null;
+
         if (source) {
             this.setSource(source);
         }
@@ -14,6 +17,8 @@ export default class ActionExecutor {
 
     setWorld(world) {
         this._world = world;
+
+        return this;
     }
 
     setSource(source) {
@@ -30,27 +35,26 @@ export default class ActionExecutor {
         if (this._source) {
             this._source.attachListeners(listeners, this);
         }
+
+        return this;
     }
 
-    _onAction(action) {
+    _onAction(action, originator) {
         if (!this._world) {
             return;
         }
 
         switch (action.type) {
             case types.MOVE:
-                return this._onMove(action, this._world);
+                return this._onMove(action, this._world, originator);
 
             case types.ATTACK:
-                return this._onAttack(action, this._world);
+                return this._onAttack(action, this._world, originator);
         }
     }
 
-    _onMove(action, world) {
-        const player = world.getPlayer(),
-            bb = player.getBoundingBox();
-
-        player.setXY(bb.getX() + action.getDeltaX(), bb.getY() + action.getDeltaY());
+    _onMove(action, world, originator) {
+        originator.move(action.getDeltaX(), action.getDeltaY());
     }
 
     _onAttack() {}

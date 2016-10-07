@@ -65,9 +65,13 @@ export default function startDispatcher(username, forceTouch) {
         });
 
         mapView.setWorld(world);
+
         statsView.setPlayer(player);
 
+        actionEmitter.setPlayer(player);
+
         actionExecutor.setWorld(world);
+
         client.setWorld(world);
     };
 

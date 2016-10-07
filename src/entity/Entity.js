@@ -163,6 +163,24 @@ export default class Entity extends Observable {
         return new Entity(blob);
     }
 
+    move(deltaX, deltaY) {
+        const bb = this.getBoundingBox();
+        this.setXY(bb.getX() + deltaX, bb.getY() + deltaY);
+    }
+
+    tick() {
+        const action = this._brain ? this._brain.tick() : undefined;
+
+        if (this._healingCounter >= this._healingRate) {
+            this._healingCounter = 0;
+            this._stats.heal(1);
+        } else {
+            this._healingCounter++;
+        }
+
+        return action;
+    }
+
     _onStatsChange() {
         this.fireEvent('statsChange', this);
     }
@@ -196,27 +214,6 @@ export default class Entity extends Observable {
             this.setHeading("north");
         } else if (boundingBoxOld.getY() < boundingBoxNew.getY()) {
             this.setHeading("south");
-        }
-    }
-
-    move(deltaX, deltaY) {
-        const bb = this.getBoundingBox();
-        this.setXY(bb.getX() + deltaX, bb.getY() + deltaY);
-    }
-
-    tick() {
-        if (this._brain) {
-            let action = this._brain.tick();
-            if (action) {
-                this.fireEvent('action', action);
-            }
-        }
-
-        if (this._healingCounter >= this._healingRate) {
-            this._healingCounter = 0;
-            this._stats.heal(1);
-        } else {
-            this._healingCounter++;
         }
     }
 }

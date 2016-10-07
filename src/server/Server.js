@@ -3,10 +3,11 @@ import * as http from 'http';
 import serveStatic from 'serve-static';
 import morgan from 'morgan';
 import express from 'express';
+import io from 'socket.io';
+
 import World from '../world/World';
 import RandomMapFactory from '../map/RandomMapFactory';
 import {newDefaultGenerator} from '../random/generatorFactory';
-import io from 'socket.io';
 import * as Action from '../action/index';
 import tiles from '../tiles';
 import Stats from '../stats/Stats';
@@ -15,6 +16,8 @@ import PlayerContext from '../player/Context';
 import * as Change from '../change/index';
 import HoundBrain from '../entity/brain/Hound';
 import ZombieBrain from '../entity/brain/Zombie';
+import ActionExecutor from './action/Executor';
+import ActionRelay from './action/Relay';
 
 export default class Server {
 
@@ -27,6 +30,8 @@ export default class Server {
         this._server = null;
         this._io = null;
         this._players = [];
+        this._actionRelay = null;
+        this._actionExecutor = null;
     }
 
     setPort(port) {
@@ -46,6 +51,7 @@ export default class Server {
         }
 
         this._initWorld();
+        this._initSimulationEngine();
 
         this._initMiddleware();
 
@@ -77,6 +83,15 @@ export default class Server {
         this._world = new World({map: map});
     }
 
+    _initSimulationEngine() {
+        this._actionRelay = new ActionRelay();
+
+        this._actionExecutor = new ActionExecutor({
+            source: this._actionRelay,
+            world: this._world
+        });
+    }
+
     // TODO: this should be refactored into a playerConnection class
     _bindConnectionHandlers() {
         this._io.on('connection', (socket) => {
@@ -102,8 +117,9 @@ export default class Server {
                     return;
                 }
 
-                let action = Action.unserialize(data.action);
-                playerContext.getEntity().fireEvent('action', action);
+                const action = Action.unserialize(data.action);
+
+                this._actionRelay.dispatchAction(action, playerContext.getEntity());
 
                 playerContext.setGeneration(data.generation);
             });
@@ -159,7 +175,11 @@ export default class Server {
     _processCycle() {
 
         for (let entity of this._world.getEntities()) {
-            entity.tick();
+            let action = entity.tick();
+
+            if (action) {
+                this._actionRelay.dispatchAction(action, entity);
+            }
         }
 
         for (let player of this._players) {
