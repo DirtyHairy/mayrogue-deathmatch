@@ -1,9 +1,7 @@
-// vim:softtabstop=4:shiftwidth=4
+import WorldBase from '../../world/World';
+import Rectangle from '../../geometry/Rectangle';
 
-import World from './World';
-import Rectangle from '../geometry/Rectangle';
-
-export default class ClientWorld extends World {
+export default class World extends WorldBase {
 
     constructor(config) {
         super(config);

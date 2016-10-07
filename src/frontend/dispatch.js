@@ -8,7 +8,7 @@ import TouchControl from '../control/Touch';
 import ActionEmitter from '../action/Emitter';
 import ActionExecutor from '../action/Executor';
 import Client from '../network/Client';
-import ClientWorld from '../world/ClientWorld';
+import World from '../client/world/World';
 import Entity from '../entity/Entity';
 import Map from '../map/Map';
 
@@ -56,7 +56,7 @@ export default function startDispatcher(username, forceTouch) {
             oldWorld.destroy();
         }
 
-        const world = new ClientWorld({
+        const world = new World({
             map: map,
             player: player,
             entities: entities,

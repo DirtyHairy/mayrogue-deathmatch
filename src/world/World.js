@@ -27,7 +27,6 @@ export default class World extends Observable {
         this._entityManager.attachListeners({
             move: this._onEntityMove,
             statsChange: this._onEntityStatsChange,
-            action: this._onEntityAction,
             entityAdded: this._onEntityAdded,
             entityRemoved: this._onEntityRemoved
         }, this);
@@ -66,8 +65,6 @@ export default class World extends Observable {
     _onEntityStatsChange() {
         this.fireEvent('change');
     }
-
-    _onEntityAction() {}
 
     _onEntityAdded() {}
 
