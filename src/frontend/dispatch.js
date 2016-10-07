@@ -9,7 +9,7 @@ import ActionEmitter from '../action/Emitter';
 import ActionExecutor from '../action/Executor';
 import Client from '../network/Client';
 import ClientWorld from '../world/ClientWorld';
-import Entity from '../entity/entity';
+import Entity from '../entity/Entity';
 import Map from '../map/Map';
 
 export default function startDispatcher(username, forceTouch) {
