@@ -6,9 +6,7 @@ This is a requirement for cleanly adding more modes of interaction (items!).
 
 ### Client side
 
- * All entity actions are converted to action objects that are emitted as events on
-   the entity &mdash; there is *no* direct mutation of world state (as opposed
-   to the current handling of movement)
+ * All entity actions are converted to action objects
 
  * Simulation engine observes actions and mutates local world state accordingly. Rollback
    changes are determined and stacked.
