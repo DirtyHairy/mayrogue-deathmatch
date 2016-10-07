@@ -132,4 +132,8 @@ export default class ClientWorld extends World {
         return value;
     }
 
+    getPlayer() {
+        return this._player;
+    }
+
 }
