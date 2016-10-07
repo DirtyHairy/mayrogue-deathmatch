@@ -2,9 +2,14 @@ import types from './types';
 
 export default class ActionExecutor {
 
-    constructor(config) {
-        this._source = config.source;
-        this._world = config.world;
+    constructor({source, world}) {
+        if (source) {
+            this.setSource(source);
+        }
+
+        if (world) {
+            this.setWorld(world);
+        }
     }
 
     setWorld(world) {
@@ -32,9 +37,15 @@ export default class ActionExecutor {
 
         switch (action.type) {
             case types.MOVE:
-                action.execute(this._world.getPlayer(), this._world);
-                break;
+                return this._onMove(action);
         }
+    }
+
+    _onMove(action) {
+        const player = this._world.getPlayer(),
+            bb = player.getBoundingBox();
+        
+        player.setXY(bb.getX() + action.getDeltaX(), bb.getY() + action.getDeltaY());
     }
 
     destroy() {

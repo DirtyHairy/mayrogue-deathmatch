@@ -72,4 +72,6 @@ module.exports = function(grunt) {
     grunt.registerTask('test:debug', 'run tests, debug mode', ['jshint', 'mochaTest:debug']);
     grunt.registerTask('build', 'build it', ['browserify']);
     grunt.registerTask('dist', 'live, the universe and everything', ['build', 'copy']);
+
+    grunt.registerTask('default', 'dist');
 };
