@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import Observable from '../util/Observable';
 
 export default class MetaControl extends Observable {
@@ -10,21 +9,16 @@ export default class MetaControl extends Observable {
     }
 
     _createEventProxy(event) {
-        return function() {
-            const args = Array.prototype.slice.call(arguments, 0);
-
-            args.unshift(event);
-            this.fireEvent.apply(this, args);
-        };
+        return (...args) => this.fireEvent.call(this, event, ...args);
     }
 
     addControl(control) {
         this._registry.push(control);
 
         const listeners = {};
-        _.each(this._controlEvents, (event) => {
-            listeners[event] = this._createEventProxy(event);
-        });
+        this._controlEvents.forEach(
+            event => listeners[event] = this._createEventProxy(event)
+        );
 
         control.attachListeners(listeners, this);
     }
@@ -35,10 +29,9 @@ export default class MetaControl extends Observable {
     }
 
     destroy() {
-        _.each(this._registry, function(control) {
-            control.detachAllListeners(this);
-        });
-
+        this._registry.forEach(
+            control => control.detachAllListeners(this)
+        );
         this._registry = [];
     }
 

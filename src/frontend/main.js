@@ -2,11 +2,12 @@
 import 'babel-polyfill';
 import startDispatcher from './dispatch';
 
-let modal = $('#loginModal'),
+const modal = $('#loginModal'),
     input = $('#inputUsername'),
     inputForceTouch = $('#inputForceTouch'),
-    button = $('#btnLogin'),
-    username = null,
+    button = $('#btnLogin');
+
+let username = null,
     forceTouch = null;
 
 modal.on('shown', function() {

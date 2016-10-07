@@ -1,19 +1,22 @@
-import * as _ from 'lodash';
 import Observable from '../util/Observable';
-import ControlTypes from './types';
+import ControlTypes from '../control/types';
 import AttackAction from './Attack';
 import MoveAction from './Move';
 
 export default class ActionEmitter extends Observable {
 
-    constructor(config) {
+    constructor({control}) {
         super();
 
-        this._control = config.control;
         this._controlQueue = [];
 
         this._timeoutHandle = null;
         this._defaultDeadTime = 100;
+
+        if (control) {
+            this.setControl(control);
+        }
+
     }
 
     setControl(control) {
@@ -46,12 +49,12 @@ export default class ActionEmitter extends Observable {
             this._controlQueue.unshift(controlType);
         }
         if (!this._timeoutHandle) {
-            this._dispatcher();
+            this._dispatch();
         }
     }
 
     _onControlDisengage(controlType) {
-        this._controlQueue = _.without(this._controlQueue, controlType);
+        this._controlQueue = this._controlQueue.filter(t => t !== controlType);
     }
 
     _buildAction(controlType) {
@@ -75,7 +78,7 @@ export default class ActionEmitter extends Observable {
         return null;
     }
 
-    _dispatcher() {
+    _dispatch() {
         if (this._controlQueue.length > 0) {
             const action = this._buildAction(this._controlQueue[0]),
                 deadTime = action ? action.getDeadTime() : this._defaultDeadTime;
@@ -84,7 +87,7 @@ export default class ActionEmitter extends Observable {
                 this.fireEvent('action', action);
             }
 
-            this._timeoutHandle = setTimeout(_.bind(this._dispatcher, this), deadTime);
+            this._timeoutHandle = setTimeout(this._dispatch.bind(this), deadTime);
         } else {
             this._timeoutHandle = null;
         }
