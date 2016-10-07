@@ -1,7 +1,13 @@
-import * as _ from 'lodash';
 import * as io from 'socket.io-client';
 import Observable from '../util/Observable';
-import {unserialize, serialize} from '../change/index';
+
+import {
+    unserialize as unserializeChange
+} from '../change';
+
+import {
+    serialize as serializeAction
+} from '../action';
 
 export default class Client extends Observable {
 
@@ -9,20 +15,25 @@ export default class Client extends Observable {
      * Create an instance of the network client
      *
      */
-    constructor(config) {
-
+    constructor({world, actionSource}) {
         super();
 
-        this._world = config.world;
         this._generation = null;
-        this._actionSource = config.actionSource;
         this._socket = null;
         this._loggedIn = false;
 
         this._socket = io.connect();
-        this._socket.on('welcome', _.bind(this._onWelcome, this));
-        this._socket.on('update', _.bind(this._onIncomingUpdate, this));
-        this._socket.on('reconnect', _.bind(this._onReconnect, this));
+        this._socket.on('welcome', this._onWelcome.bind(this));
+        this._socket.on('update', this._onIncomingUpdate.bind(this));
+        this._socket.on('reconnect', this._onReconnect.bind(this));
+
+        if (world) {
+            this.setWorld(world);
+        }
+
+        if (actionSource) {
+            this.setActionSource(actionSource);
+        }
     }
 
     getLoggedIn() {
@@ -52,7 +63,7 @@ export default class Client extends Observable {
     }
 
     _onIncomingUpdate(payload) {
-        const changeset = _.map(payload.changeset, unserialize),
+        const changeset = payload.changeset.map(unserializeChange),
             stale = (this._generation !== payload.generation),
             world = this.getWorld();
 
@@ -61,9 +72,9 @@ export default class Client extends Observable {
         }
 
         world.startBatchUpdate();
-        _.each(changeset, (change) => {
-            change.apply(world, stale);
-        });
+
+        changeset.forEach(change => change.apply(world, stale));
+
         world.endBatchUpdate();
     }
 
@@ -88,7 +99,7 @@ export default class Client extends Observable {
 
         this._socket.emit('action', {
             generation: ++this._generation,
-            action: serialize(action)
+            action: serializeAction(action)
         });
     }
 
