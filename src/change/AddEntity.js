@@ -3,7 +3,7 @@ import Entity from '../entity/Entity';
 
 export default class AddEntity {
 
-    constructor({entity = null} = {}) {
+    constructor(entity = null) {
         this._entity = entity;
     }
 
