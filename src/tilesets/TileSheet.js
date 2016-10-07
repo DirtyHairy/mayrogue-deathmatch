@@ -19,6 +19,8 @@ export default class TileSheet extends BaseTileSheet {
         this._url = config.url;
         this._tileWidth = config.tileWidth;
         this._tileHeight = config.tileHeight;
+        this.width = this._tileWidth;
+        this.height = this._tileHeight;
 
         this._image = null;
         this._origin = {x: 0, y: 0};
