@@ -125,9 +125,7 @@ export default class ChangeTracker {
 
             // To-be-tracked entities which were not tracked before are transmitted
             if (!trackedEntitiesOld[id]) {
-                changeset.push(new ChangeAddEntity({
-                    entity: entity
-                }));
+                changeset.push(new ChangeAddEntity(entity));
             }
         });
 
