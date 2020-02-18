@@ -18,7 +18,7 @@
   "license": "MIT",
   "dependencies": {
     "bower": "~1.7.7",
-    "express": "~3.4",
+    "express": "~4.17",
     "grunt": "~0.4",
     "grunt-cli": "~0.1",
     "grunt-requirejs": "~0.4",
